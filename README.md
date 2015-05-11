@@ -1,39 +1,20 @@
-# Graphite::Tools
+# Utilities for working with graphite / carbon
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/graphite/tools`. To experiment with that code, run `bin/console` for an interactive prompt.
+Calculate the number of bytes a given Carbon retention policy will take
 
-TODO: Delete this and the text above, and describe your gem
+## whisper-calc
 
-## Installation
+```
+$ whisper-calc -n 10 -m 100 10s:1d,1m:7d,10m:1y,60m:5y
+=> 1.29 GB
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'graphite-tools'
+$ whisper-calc -n 10 -m 100 10s:1d,1m:1y
+=> 5.97 GB
 ```
 
-And then execute:
+## graphite-predict
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install graphite-tools
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release` to create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-1. Fork it ( https://github.com/[my-github-username]/graphite-tools/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+```
+$ curl "http://localhost/render/?from=-7days&target=server.diskspace.root.byte_free&format=json" | graphite-predict
+=> server.diskspace.root.byte_free : 2015-07-26 19:59:24 -0700
+```

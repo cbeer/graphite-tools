@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require 'active_support'
+require 'graphite/tools'
+require 'optparse'
+require 'json'
+
+options = { nodes: 1, metrics: 1, size_per_metric: 12 }
+
+OptionParser.new do |opts|
+  opts.banner = 'Usage: graphite-predict [options]'
+end.parse!
+
+data = JSON.parse(ARGF.read)
+
+data.each do |metric|
+  calc = Graphite::Tools::Regression.new(metric)
+  puts "#{metric['target']} : #{calc.x_intercept}"
+end
