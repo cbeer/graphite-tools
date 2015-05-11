@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['chris@cbeer.info']
 
   spec.summary       = 'Tools for working with graphite'
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = 'https://github.com/cbeer/graphite-tools'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = 'exe'
