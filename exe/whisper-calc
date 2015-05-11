@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+
+require 'active_support'
+require 'graphite/tools'
+require 'optparse'
+
+options = { nodes: 1, metrics: 1, size_per_metric: 12 }
+
+OptionParser.new do |opts|
+  opts.banner = 'Usage: whisper-calc [options]'
+
+  opts.on('-n', '--nodes [NODES]') do |n|
+    options[:nodes] = n.to_i
+  end
+
+  opts.on('-m', '--metrics [metrics]') do |m|
+    options[:metrics] = m.to_i
+  end
+end.parse!
+
+calc = Graphite::Tools::WhisperCalc.new(ARGV[0])
+bytes_per_metric = calc.to_i * options[:size_per_metric]
+bytes_per_node = bytes_per_metric * options[:metrics]
+total_bytes = bytes_per_node * options[:nodes]
+
+puts ActiveSupport::NumberHelper.number_to_human_size(total_bytes)
