@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+require 'active_support'
+require 'graphite/tools'
+require 'optparse'
+require 'json'
+
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = 'Usage: graphite-spark [options]'
+
+  opts.on('-r', '--range [VALUE]') do |r|
+    min, max = r.split(',').map(&:strip)
+
+    options[:min] = min.to_i if min && !min.empty?
+    options[:max] = max.to_i if max && !max.empty?
+  end
+end.parse!
+
+data = JSON.parse(ARGF.read)
+
+ticks = %w(▁ ▂ ▃ ▄ ▅ ▆ ▇ █)
+
+data.each do |metric|
+  d = Hash[*metric['datapoints'].map { |(v, t)| [t, v] }.reject { |_k, v| v.nil? }.flatten]
+
+  min, max = d.values.minmax
+
+  min = options[:min] if options[:min]
+
+  puts "#{metric['target']} : #{d.values.map do |v|
+    i = (ticks.length * ((v - min) / (max - min).to_f)).to_i
+    ticks[i]
+  end.join('')}"
+end

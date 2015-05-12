@@ -18,3 +18,11 @@ $ whisper-calc -n 10 -m 100 10s:1d,1m:1y
 $ curl "http://localhost/render/?from=-7days&target=server.diskspace.root.byte_free&format=json" | graphite-predict
 => server.diskspace.root.byte_free : 2015-07-26 19:59:24 -0700
 ```
+
+## graphite-spark
+
+```
+$ curl "http://localhost/render/?from=-7days&target=server.diskspace.root.byte_free&format=json" | graphite-spark
+=> server.diskspace.root.byte_free :  ██▆▅▃▂▁
+
+```
