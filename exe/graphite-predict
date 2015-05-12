@@ -5,15 +5,32 @@ require 'graphite/tools'
 require 'optparse'
 require 'json'
 
-options = { nodes: 1, metrics: 1, size_per_metric: 12 }
+options = { value: 0 }
 
 OptionParser.new do |opts|
   opts.banner = 'Usage: graphite-predict [options]'
+
+  opts.on('-v', '--value [VALUE]') do |v|
+    num, unit = v.scan(/(\d+)(.)$/).first
+    num = num.to_i
+
+    options[:value] = case unit
+                      when 'k'
+                        num * 1000
+                      when 'm'
+                        num * 1000 * 1000
+                      when 'g'
+                        num * 1000 * 1000 * 1000
+                      else
+                        num
+                      end
+  end
 end.parse!
 
 data = JSON.parse(ARGF.read)
 
 data.each do |metric|
   calc = Graphite::Tools::Regression.new(metric)
-  puts "#{metric['target']} : #{calc.x_intercept}"
+  t = calc.x_intercept(options[:value])
+  puts "#{metric['target']} : #{t if t >= Time.now}"
 end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Graphite::Tools::Regression do
-  subject { described_class.new('datapoints' => datapoints) }
+  subject { described_class.new('target' => 'x', 'datapoints' => datapoints) }
   let(:datapoints) do 
     [
       [nil, 1430697600], 

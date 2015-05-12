@@ -10,6 +10,20 @@ module Graphite
         @data = data
       end
 
+      def forecast(*args)
+        linefit.forecast(*args)
+      end
+
+      def x_intercept(y_val = 0)
+        return if slope == 0
+
+        t = (y_val - intercept) / slope
+
+        Time.at(t)
+      end
+
+      private
+
       def datapoints
         d = @data['datapoints'].map    { |(v, t)| [t, v] }
                                .reject { |_k, v| v.nil? }
@@ -24,13 +38,12 @@ module Graphite
         end
       end
 
-      def forecast(*args)
-        linefit.forecast(*args)
+      def slope
+        linefit.coefficients.last || 0
       end
 
-      def x_intercept(y_val = 0)
-        intercept, slope = linefit.coefficients
-        Time.at((y_val - intercept) / slope) if slope && slope < 0
+      def intercept
+        linefit.coefficients.first || 0
       end
     end
   end
